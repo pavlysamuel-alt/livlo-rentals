@@ -65,14 +65,43 @@ The one overlay anywhere is the gradient scrim behind hero headlines. That is a 
 sitting *above* the photograph so white type stays legible — the file underneath is
 untouched.
 
+## The site never names the platform
+
+This is a direct-booking site, so **no page mentions Airbnb, or any other platform, by
+name.** Sending a visitor off to go and look up the listing defeats the entire point.
+That rule covers headings, the review counts, the calendar stamp, meta descriptions and
+the guest-tenure badges. Keep it that way when you edit.
+
+Where the wording used to lean on the platform, it now stands on its own:
+
+| was | now |
+|---|---|
+| "59 reviews on Airbnb" | "59 guest reviews" |
+| "reviews left on Airbnb, reproduced as written" | "reviews guests have left, lightly condensed but never softened" |
+| "Availability as shown on Airbnb on …" | "Availability as of …" |
+| "rated in the top ten percent on Airbnb" | "kept to the same standard" |
+| "Airbnb adds its cut at checkout" | "Booking platforms take their cut at checkout" |
+| "Three years hosting, Superhost throughout" | "Three years of hosting" |
+| "8 years on Airbnb · Stayed with kids" | "Stayed with kids" |
+
+The `refresh-availability.py` script and this README still name it, because they have to —
+a maintenance doc that cannot say where the data comes from is useless. Nothing a visitor
+sees does.
+
 ## What is honest about the content
 
-- **Reviews are real and transcribed from the listings**, including the critical ones —
-  Jason's four-star about the snake in the pool and the boat on the dock, Stacey's
-  "numerous issues", Channing's four-star. Nothing was filtered.
-- **24 reviews are shown per property**, out of 59 and 158. Airbnb serves the rest through
-  a paginated API that resisted scripted extraction. The overall ratings, the star
-  distribution and the category scores are the real published figures.
+- **Reviews are real**, including the critical ones — Jason's four-star about the snake in
+  the pool and the boat on the dock, Stacey's "numerous issues", Channing's four-star.
+  Nothing was filtered.
+- **They are lightly condensed, not verbatim.** Long reviews were trimmed for length, and
+  in four of them the platform's name was swapped for a neutral word ("this is the best
+  Airbnb we have stayed in" → "…the best place we have stayed in"). The sense of every
+  sentence is unchanged, but they are not word-for-word transcripts and the page no longer
+  claims they are. If you would rather those four ran exactly as written, drop them
+  instead — they are Dustin's, Melissa's, Krista's and Anna's.
+- **24 reviews are shown per property**, out of 59 and 158. The rest sit behind a paginated
+  API that resisted scripted extraction. The overall ratings, the star distribution and the
+  category scores are the real published figures.
 - **The "Local Perks Passport" from v1 is gone.** It described negotiated discounts with
   local businesses that do not exist yet. Put it back the moment they do.
 

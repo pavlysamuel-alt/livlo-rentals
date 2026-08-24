@@ -142,7 +142,7 @@ def main():
                 source = "ical"
             else:
                 avail, mins = from_api(meta["id"], args.months)
-                source = "airbnb-api"
+                source = "listing-api"
             out["properties"][key] = {
                 "name": meta["name"], "source": source,
                 "available": avail, "minNights": mins,

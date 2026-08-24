@@ -296,7 +296,7 @@
         var last = p.available[p.available.length - 1];
         if (last) horizon = new Date(last.slice(0, 7) + '-01T00:00:00');
         stamp.textContent =
-          'Availability as shown on Airbnb on ' + pretty(data.fetched) +
+          'Availability as of ' + pretty(data.fetched) +
           '. Dates are confirmed by reply — a night marked free here may have gone since.';
         draw(); describe();
       })
