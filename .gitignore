@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# python
+__pycache__/
+*.pyc
+
+# internal working notes — kept locally, not published
+CLAUDE.md
+
+# the previous version of the site, kept on disk for reference only
+_v1-archive/
+
+*.log
