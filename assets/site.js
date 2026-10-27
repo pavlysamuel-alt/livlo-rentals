@@ -307,51 +307,95 @@
       });
   }
 
-  /* ---------- forms → the host's inbox. Nothing sends itself. ---------- */
+  /* ---------- forms ----------
+     A mailto: hand-off only works if the visitor's device has a mail app
+     registered. On a desktop running webmail it does nothing at all — so we
+     never claim the message was sent. We attempt the hand-off, then put the
+     composed text on screen with the phone number and a copy button, so the
+     enquiry is never lost just because the browser stayed silent. */
   var TO = 'pavly.samuel@gmail.com';
+  var TEL = '519 505 5443';
+  var TEL_HREF = '+15195055443';
   var val = function (fd, k) { return (fd.get(k) || '').toString().trim(); };
 
-  var enquiry = document.querySelector('#enquiry');
-  if (enquiry) {
-    enquiry.addEventListener('submit', function (e) {
+  function fallbackPanel(form, subject, body) {
+    var box = form.querySelector('.sent-fallback');
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'sent-fallback';
+      box.setAttribute('role', 'status');
+      box.innerHTML =
+        '<p class="sf-head">If your mail app didn\'t open, nothing has been sent yet.</p>' +
+        '<p class="sf-sub">Copy the message below and email it, or just call — either reaches Paul directly.</p>' +
+        '<textarea class="sf-text" readonly rows="7"></textarea>' +
+        '<div class="sf-row">' +
+          '<button type="button" class="btn sf-copy">Copy message</button>' +
+          '<a class="btn sf-mail">Email ' + TO + '</a>' +
+          '<a class="btn sf-tel" href="tel:' + TEL_HREF + '">Call or text ' + TEL + '</a>' +
+        '</div>';
+      form.appendChild(box);
+      box.querySelector('.sf-copy').addEventListener('click', function () {
+        var ta = box.querySelector('.sf-text');
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(ta.value).then(function () {
+            box.querySelector('.sf-copy').textContent = 'Copied';
+          }, function () {});
+        } else if (ok) {
+          box.querySelector('.sf-copy').textContent = 'Copied';
+        }
+      });
+    }
+    box.querySelector('.sf-text').value = body;
+    box.querySelector('.sf-mail').href =
+      'mailto:' + TO + '?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(body);
+    box.classList.add('show');
+    box.scrollIntoView({ block: 'nearest' });
+  }
+
+  function wire(form, buildSubject, buildBody) {
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var f = new FormData(enquiry);
-      var house = val(f, 'property') || 'a stay';
-      var body =
-        'Name: ' + val(f, 'name') +
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      var f = new FormData(form);
+      var subject = buildSubject(f), body = buildBody(f);
+      // try the hand-off, but never assume it worked
+      try {
+        window.location.href = 'mailto:' + TO +
+          '?subject=' + encodeURIComponent(subject) +
+          '&body=' + encodeURIComponent(body);
+      } catch (err) { /* ignore — the panel below covers it */ }
+      var b = form.querySelector('[type=submit]');
+      if (b) b.textContent = 'Send again';
+      fallbackPanel(form, subject, body);
+    });
+  }
+
+  wire(document.querySelector('#enquiry'),
+    function (f) { return 'Enquiry — ' + (val(f, 'property') || 'a stay'); },
+    function (f) {
+      return 'Name: ' + val(f, 'name') +
         '\nEmail: ' + val(f, 'email') +
-        '\nProperty: ' + house +
+        '\nProperty: ' + (val(f, 'property') || 'a stay') +
         '\nArrive: ' + val(f, 'arrive') +
         '\nDepart: ' + val(f, 'depart') +
         '\nGuests: ' + val(f, 'guests') +
         '\n\n' + (val(f, 'message') || '(no message)');
-      window.location.href = 'mailto:' + TO +
-        '?subject=' + encodeURIComponent('Enquiry — ' + house) +
-        '&body=' + encodeURIComponent(body);
-      var b = enquiry.querySelector('[type=submit]');
-      if (b) b.textContent = 'Opening your mail app…';
     });
-  }
 
-  var wordForm = document.querySelector('#leave-word');
-  if (wordForm) {
-    wordForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var f = new FormData(wordForm);
-      var house = val(f, 'property') || '';
-      var body =
-        'Name: ' + val(f, 'name') +
-        '\nProperty: ' + house +
+  wire(document.querySelector('#leave-word'),
+    function (f) { return 'Guest review — ' + val(f, 'property'); },
+    function (f) {
+      return 'Name: ' + val(f, 'name') +
+        '\nProperty: ' + val(f, 'property') +
         '\nRating: ' + (val(f, 'rating') || '—') + ' / 5' +
         '\n\nReview:\n' + val(f, 'review') +
         '\n\nPrivate suggestion:\n' + (val(f, 'suggestion') || '(none)');
-      window.location.href = 'mailto:' + TO +
-        '?subject=' + encodeURIComponent('Guest review — ' + house) +
-        '&body=' + encodeURIComponent(body);
-      var b = wordForm.querySelector('[type=submit]');
-      if (b) b.textContent = 'Opening your mail app…';
     });
-  }
 
   /* ---------- dates: depart cannot precede arrive ---------- */
   var arrive = document.querySelector('#arrive');

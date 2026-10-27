@@ -574,3 +574,32 @@ footer a:hover{color:var(--bone);}
   .nav,.menu,.lb,.scroll-cue,form{display:none !important;}
   body{background:#fff;color:#000;}
 }
+
+/* ============================================================
+   CONTACT — replaces the old mailto forms. A form that silently
+   fails is worse than no form; a phone number always works.
+   ============================================================ */
+.contact-band{padding-block:clamp(56px,7vw,96px);}
+.contact-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(14px,2vw,24px);
+}
+.contact-card{
+  display:flex;flex-direction:column;gap:12px;text-decoration:none;
+  padding:clamp(28px,3.4vw,44px) clamp(24px,3vw,40px);
+  background:rgba(244,241,234,.07);
+  border:1px solid var(--bone-16);
+  transition:background var(--med) var(--ease),border-color var(--med) var(--ease);
+  min-height:112px;justify-content:center;
+}
+.contact-card:hover{background:rgba(244,241,234,.13);border-color:var(--teal);}
+.cc-lbl{
+  font-size:.6875rem;letter-spacing:.24em;text-transform:uppercase;color:var(--teal);
+}
+.cc-val{
+  font-family:var(--serif);font-size:clamp(1.6rem,3.2vw,2.5rem);
+  line-height:1.1;color:var(--bone);word-break:break-word;
+}
+.cc-mail{font-size:clamp(1.15rem,2.1vw,1.7rem);}
+@media (max-width:720px){
+  .contact-grid{grid-template-columns:1fr;}
+}
